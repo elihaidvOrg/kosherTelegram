@@ -1498,15 +1498,16 @@ public class ReactionsLayoutInBubble {
                     }
                     lastSelectedButton.bounce.setPressed(true);
 
-                    final ReactionButton selectedButtonFinal = lastSelectedButton;
-                    AndroidUtilities.runOnUIThread(longPressRunnable = () -> {
-                        didPressReaction(selectedButtonFinal.reactionCount, true, 0, 0);
-                        selectedButtonFinal.bounce.setPressed(false);
-                        lastSelectedButton = null;
-                        pressed = false;
-                        longPressRunnable = null;
-                        // here
-                    }, ViewConfiguration.getLongPressTimeout());
+                    // Disabled long-press to show users who reacted
+                    // final ReactionButton selectedButtonFinal = lastSelectedButton;
+                    // AndroidUtilities.runOnUIThread(longPressRunnable = () -> {
+                    //     didPressReaction(selectedButtonFinal.reactionCount, true, 0, 0);
+                    //     selectedButtonFinal.bounce.setPressed(false);
+                    //     lastSelectedButton = null;
+                    //     pressed = false;
+                    //     longPressRunnable = null;
+                    //     // here
+                    // }, ViewConfiguration.getLongPressTimeout());
                     pressed = true;
                     break;
                 }
