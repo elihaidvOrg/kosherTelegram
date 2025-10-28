@@ -31077,19 +31077,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                             closeMenu(false);
                                             showDialog(alert);
                                         })
-                                        .setOnProfileSelectedListener((view, userId, messagePeerReaction) -> {
-                                            Bundle args = new Bundle();
-                                            if (userId > 0) {
-                                                args.putLong("user_id", userId);
-                                            } else {
-                                                args.putLong("chat_id", -userId);
-                                            }
-                                            args.putInt("report_reaction_message_id", primaryMessage.getId());
-                                            args.putLong("report_reaction_from_dialog_id", dialog_id);
-                                            ProfileActivity fragment = new ProfileActivity(args);
-                                            presentFragment(fragment);
-                                            closeMenu();
-                                        }).setOnHeightChangedListener((view, newHeight) -> {
+                                        // Disable profile access from reactions
+                                        // .setOnProfileSelectedListener((view, userId, messagePeerReaction) -> {
+                                        //     Bundle args = new Bundle();
+                                        //     if (userId > 0) {
+                                        //         args.putLong("user_id", userId);
+                                        //     } else {
+                                        //         args.putLong("chat_id", -userId);
+                                        //     }
+                                        //     args.putInt("report_reaction_message_id", primaryMessage.getId());
+                                        //     args.putLong("report_reaction_from_dialog_id", dialog_id);
+                                        //     ProfileActivity fragment = new ProfileActivity(args);
+                                        //     presentFragment(fragment);
+                                        //     closeMenu();
+                                        // })
+                                        .setOnHeightChangedListener((view, newHeight) -> {
                                             cachedHeights.put(position, head + newHeight);
                                             if (pager.getCurrentItem() == position)
                                                 popupLayout.getSwipeBack().setNewForegroundHeight(foregroundIndex[0], head + newHeight, true);
@@ -31166,19 +31168,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                     closeMenu(false);
                                     showDialog(alert);
                                 })
-                                .setOnProfileSelectedListener((view, userId, messagePeerReaction) -> {
-                                    Bundle args = new Bundle();
-                                    if (userId > 0) {
-                                        args.putLong("user_id", userId);
-                                    } else {
-                                        args.putLong("chat_id", -userId);
-                                    }
-                                    args.putInt("report_reaction_message_id", primaryMessage.getId());
-                                    args.putLong("report_reaction_from_dialog_id", dialog_id);
-                                    ProfileActivity fragment = new ProfileActivity(args);
-                                    presentFragment(fragment);
-                                    closeMenu();
-                                }).setOnHeightChangedListener((view, newHeight) -> popupLayout.getSwipeBack().setNewForegroundHeight(foregroundIndex[0], AndroidUtilities.dp(44 + 8) + newHeight, true));
+                                // Disable profile access from reactions
+                                // .setOnProfileSelectedListener((view, userId, messagePeerReaction) -> {
+                                //     Bundle args = new Bundle();
+                                //     if (userId > 0) {
+                                //         args.putLong("user_id", userId);
+                                //     } else {
+                                //         args.putLong("chat_id", -userId);
+                                //     }
+                                //     args.putInt("report_reaction_message_id", primaryMessage.getId());
+                                //     args.putLong("report_reaction_from_dialog_id", dialog_id);
+                                //     ProfileActivity fragment = new ProfileActivity(args);
+                                //     presentFragment(fragment);
+                                //     closeMenu();
+                                // })
+                                .setOnHeightChangedListener((view, newHeight) -> popupLayout.getSwipeBack().setNewForegroundHeight(foregroundIndex[0], AndroidUtilities.dp(44 + 8) + newHeight, true));
                         reactedView.setSeenCallback(reactedUsersListView::setSeenUsers);
                         linearLayout.addView(reactedUsersListView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
                     }
@@ -38735,9 +38739,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (isAvatarPreviewerEnabled()) {
                 final boolean enableMention = currentChat != null && (bottomOverlayChat == null || bottomOverlayChat.getVisibility() != View.VISIBLE) && (bottomOverlay == null || bottomOverlay.getVisibility() != View.VISIBLE);
                 final boolean enableSearchMessages = currentChat != null && (threadMessageId == 0 || isTopic) && (!ChatObject.isChannel(currentChat) || currentChat.megagroup);
-                final AvatarPreviewer.MenuItem[] menuItems = new AvatarPreviewer.MenuItem[2 + (enableMention ? 1 : 0) + (enableSearchMessages ? 1 : 0)];
+                // Disable OPEN_PROFILE option from avatar long press
+                final AvatarPreviewer.MenuItem[] menuItems = new AvatarPreviewer.MenuItem[1 + (enableMention ? 1 : 0) + (enableSearchMessages ? 1 : 0)];
                 int a = 0;
-                menuItems[a++] = AvatarPreviewer.MenuItem.OPEN_PROFILE;
+                // menuItems[a++] = AvatarPreviewer.MenuItem.OPEN_PROFILE;
                 menuItems[a++] = AvatarPreviewer.MenuItem.SEND_MESSAGE;
                 if (enableMention) {
                     menuItems[a++] = AvatarPreviewer.MenuItem.MENTION;
@@ -38761,9 +38766,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             case SEND_MESSAGE:
                                 openDialog(cell, user);
                                 break;
-                            case OPEN_PROFILE:
-                                openProfile(user);
-                                break;
+                            // Disable OPEN_PROFILE case
+                            // case OPEN_PROFILE:
+                            //     openProfile(user);
+                            //     break;
                             case MENTION:
                                 appendMention(user);
                                 break;
@@ -38775,9 +38781,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     return true;
                 } else {
                     ItemOptions.makeOptions(ChatActivity.this, cell)
-                        .add(R.drawable.msg_openprofile, getString(R.string.OpenProfile), () -> {
-                            openProfile(user);
-                        })
+                        // Disable OPEN_PROFILE option
+                        // .add(R.drawable.msg_openprofile, getString(R.string.OpenProfile), () -> {
+                        //     openProfile(user);
+                        // })
                         .add(R.drawable.msg_discussion, getString(R.string.SendMessage), () -> {
                             openDialog(cell, user);
                         })
@@ -38859,9 +38866,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 final boolean enableMention = !TextUtils.isEmpty(ChatObject.getPublicUsername(chat)) && currentChat != null && (bottomOverlayChat == null || bottomOverlayChat.getVisibility() != View.VISIBLE) && (bottomOverlay == null || bottomOverlay.getVisibility() != View.VISIBLE);
                 final boolean enableSearchMessages = currentChat != null && (threadMessageId == 0 || isTopic) && (!ChatObject.isChannel(currentChat) || currentChat.megagroup);
                 final boolean openChannel = currentChat == null || currentChat.id != chat.id || isThreadChat();
-                final AvatarPreviewer.MenuItem[] menuItems = new AvatarPreviewer.MenuItem[1 + (openChannel ? 1 : 0) + (enableMention ? 1 : 0) + (enableSearchMessages ? 1 : 0)];
+                // Disable OPEN_PROFILE option from avatar long press
+                final AvatarPreviewer.MenuItem[] menuItems = new AvatarPreviewer.MenuItem[0 + (openChannel ? 1 : 0) + (enableMention ? 1 : 0) + (enableSearchMessages ? 1 : 0)];
                 int a = 0;
-                menuItems[a++] = AvatarPreviewer.MenuItem.OPEN_PROFILE;
+                // menuItems[a++] = AvatarPreviewer.MenuItem.OPEN_PROFILE;
                 if (openChannel) {
                     menuItems[a++] = chat.broadcast ? AvatarPreviewer.MenuItem.OPEN_CHANNEL : AvatarPreviewer.MenuItem.OPEN_GROUP;
                 }
@@ -38881,9 +38889,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (AvatarPreviewer.canPreview(data)) {
                     AvatarPreviewer.getInstance().show((ViewGroup) fragmentView, themeDelegate, data, item -> {
                         switch (item) {
-                            case OPEN_PROFILE:
-                                openProfile(chat);
-                                break;
+                            // Disable OPEN_PROFILE case
+                            // case OPEN_PROFILE:
+                            //     openProfile(chat);
+                            //     break;
                             case MENTION:
                                 appendMention(chat);
                                 break;
@@ -38899,9 +38908,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     return true;
                 } else {
                     ItemOptions.makeOptions(ChatActivity.this, cell)
-                        .add(R.drawable.msg_openprofile, getString(R.string.OpenProfile), () -> {
-                            openProfile(chat);
-                        })
+                        // Disable OPEN_PROFILE option
+                        // .add(R.drawable.msg_openprofile, getString(R.string.OpenProfile), () -> {
+                        //     openProfile(chat);
+                        // })
                         .addIf(openChannel, chat.broadcast ? R.drawable.msg_channel : R.drawable.msg_discussion, getString(chat.broadcast ? R.string.OpenChannel2 : R.string.OpenGroup2), () -> {
                             openChat(cell, chat, 0, false);
                         })
@@ -43907,19 +43917,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         closeMenu(false);
                         showDialog(alert);
                     })
-                    .setOnProfileSelectedListener((view1, userId, messagePeerReaction) -> {
-                        Bundle args = new Bundle();
-                        if (userId > 0) {
-                            args.putLong("user_id", userId);
-                        } else {
-                            args.putLong("chat_id", -userId);
-                        }
-                        args.putInt("report_reaction_message_id", messageObject.getId());
-                        args.putLong("report_reaction_from_dialog_id", dialog_id);
-                        ProfileActivity fragment = new ProfileActivity(args);
-                        presentFragment(fragment);
-                        closeMenu();
-                    }), LayoutHelper.createFrame(240, LayoutHelper.WRAP_CONTENT));
+                    // Disable profile access from reactions
+                    // .setOnProfileSelectedListener((view1, userId, messagePeerReaction) -> {
+                    //     Bundle args = new Bundle();
+                    //     if (userId > 0) {
+                    //         args.putLong("user_id", userId);
+                    //     } else {
+                    //         args.putLong("chat_id", -userId);
+                    //     }
+                    //     args.putInt("report_reaction_message_id", messageObject.getId());
+                    //     args.putLong("report_reaction_from_dialog_id", dialog_id);
+                    //     ProfileActivity fragment = new ProfileActivity(args);
+                    //     presentFragment(fragment);
+                    //     closeMenu();
+                    // })
+                    , LayoutHelper.createFrame(240, LayoutHelper.WRAP_CONTENT));
             } else if (reaction.reaction instanceof TLRPC.TL_reactionCustomEmoji) {
                 TLRPC.TL_reactionCustomEmoji customEmoji = (TLRPC.TL_reactionCustomEmoji) reaction.reaction;
                 TLRPC.InputStickerSet inputStickerSet = AnimatedEmojiDrawable.getDocumentFetcher(currentAccount).findStickerSet(customEmoji.document_id);
