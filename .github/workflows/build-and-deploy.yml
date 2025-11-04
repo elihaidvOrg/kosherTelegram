@@ -122,10 +122,17 @@ jobs:
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS }}
       
+      - name: Extract Firebase project ID
+        id: firebase_project
+        run: |
+          PROJECT_ID=$(echo '${{ secrets.FIREBASE_SERVICE_CREDENTIALS }}' | jq -r '.project_id')
+          echo "project_id=$PROJECT_ID" >> $GITHUB_OUTPUT
+          echo "Firebase project ID: $PROJECT_ID"
+      
       - name: Upload APK to Firebase Storage as 'latest'
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: TMessagesProj_App/build/outputs/apk/afat/release/app.apk
-          destination: ${{ secrets.FIREBASE_STORAGE_BUCKET }}/latest.apk
+          destination: ${{ steps.firebase_project.outputs.project_id }}.appspot.com/latest.apk
           parent: false
           predefinedAcl: publicRead
