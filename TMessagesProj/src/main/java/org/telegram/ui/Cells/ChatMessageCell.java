@@ -11100,25 +11100,27 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (delegate != null) {
             boolean handled = false;
 
-            if (avatarPressed) {
-                if (currentUser != null) {
-                    if (currentUser.id != 0) {
-                        handled = delegate.didLongPressUserAvatar(this, currentUser, lastTouchX, lastTouchY);
-                    }
-                } else if (currentChat != null) {
-                    final int id;
-                    if (currentMessageObject.messageOwner.fwd_from != null) {
-                        if ((currentMessageObject.messageOwner.fwd_from.flags & 16) != 0) {
-                            id = currentMessageObject.messageOwner.fwd_from.saved_from_msg_id;
-                        } else {
-                            id = currentMessageObject.messageOwner.fwd_from.channel_post;
-                        }
-                    } else {
-                        id = 0;
-                    }
-                    handled = delegate.didLongPressChannelAvatar(this, currentChat, id, lastTouchX, lastTouchY);
-                }
-            } else if (sideButtonPressed) {
+            // Disabled long-press on avatar to prevent showing profile/sending private message
+            // if (avatarPressed) {
+            //     if (currentUser != null) {
+            //         if (currentUser.id != 0) {
+            //             handled = delegate.didLongPressUserAvatar(this, currentUser, lastTouchX, lastTouchY);
+            //         }
+            //     } else if (currentChat != null) {
+            //         final int id;
+            //         if (currentMessageObject.messageOwner.fwd_from != null) {
+            //             if ((currentMessageObject.messageOwner.fwd_from.flags & 16) != 0) {
+            //                 id = currentMessageObject.messageOwner.fwd_from.saved_from_msg_id;
+            //             } else {
+            //                 id = currentMessageObject.messageOwner.fwd_from.channel_post;
+            //             }
+            //         } else {
+            //             id = 0;
+            //         }
+            //         handled = delegate.didLongPressChannelAvatar(this, currentChat, id, lastTouchX, lastTouchY);
+            //     }
+            // } else 
+            if (sideButtonPressed) {
                 if (pressedSideButton != SIDE_BUTTON_SPONSORED_CLOSE &&
                     pressedSideButton != SIDE_BUTTON_SPONSORED_MORE &&
                     pressedSideButton != 3 && pressedSideButton != 2
