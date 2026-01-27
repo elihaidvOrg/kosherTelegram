@@ -3493,14 +3493,12 @@ public abstract class BotWebViewContainer extends FrameLayout implements Notific
                             }
                             builder.setTitleMultipleLines(true);
                             builder.setTitle(formattedUrl);
+                            // MODIFIED: Removed "Open in Telegram Browser" option - only show external browser and copy
                             builder.setItems(new CharSequence[]{
-                                    LocaleController.getString(R.string.OpenInTelegramBrowser),
                                     LocaleController.getString(R.string.OpenInSystemBrowser),
                                     LocaleController.getString(R.string.Copy)
                             }, (dialog, which) -> {
                                 if (which == 0) {
-                                    loadUrl(url);
-                                } else if (which == 1) {
                                     try {
                                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                                         intent.putExtra(android.provider.Browser.EXTRA_CREATE_NEW_TAB, true);
@@ -3508,9 +3506,8 @@ public abstract class BotWebViewContainer extends FrameLayout implements Notific
                                         getContext().startActivity(intent);
                                     } catch (Exception e) {
                                         FileLog.e(e);
-                                        loadUrl(url);
                                     }
-                                } else if (which == 2) {
+                                } else if (which == 1) {
                                     AndroidUtilities.addToClipboard(url);
                                     if (botWebViewContainer != null) {
                                         botWebViewContainer.showLinkCopiedBulletin();

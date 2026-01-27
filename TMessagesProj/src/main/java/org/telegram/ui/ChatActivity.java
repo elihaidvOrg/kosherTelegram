@@ -42508,16 +42508,13 @@ public class ChatActivity extends BaseFragment implements
         final ScrimOptions dialog = new ScrimOptions(getContext(), themeDelegate);
         options.setOnDismiss(dialog::dismissFast);
 
-        final boolean customTabs = SharedConfig.inappBrowser && !str.startsWith("video?") && !Browser.isInternalUri(Uri.parse(str), null);
         final boolean isHashtag = str.startsWith("#") || str.startsWith("$");
         final boolean isMail = str.startsWith("mailto:");
 
         if (!isMail) {
-            options.add(R.drawable.msg_openin, getString(customTabs && !isHashtag ? R.string.OpenInTelegramBrowser : R.string.Open), () -> {
+            options.add(R.drawable.msg_openin, getString(R.string.Open), () -> {
                 if (str.startsWith("video?")) {
                     didPressMessageUrl(span, false, messageObject, cell);
-                } else if (customTabs && !isHashtag) {
-                    Browser.openInTelegramBrowser(getParentActivity(), str, null);
                 } else {
                     logSponsoredClicked(messageObject, false, false);
                     openClickableLink(span, str, false, cell, messageObject, false);
@@ -42525,7 +42522,7 @@ public class ChatActivity extends BaseFragment implements
             });
         }
 
-        if (customTabs && !isHashtag || isMail) {
+        if (!isHashtag || isMail) {
             options.add(R.drawable.msg_language, getString(R.string.OpenInSystemBrowser), () -> {
                 Browser.openInExternalBrowser(getParentActivity(), str, false);
             });

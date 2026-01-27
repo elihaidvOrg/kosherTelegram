@@ -325,22 +325,9 @@ public class Browser {
                             progressDialog[0] = null;
                         }
 
-                        boolean ok = false;
-                        if (response instanceof TL_account.webPagePreview) {
-                            final TL_account.webPagePreview preview = (TL_account.webPagePreview) response;
-                            MessagesController.getInstance(currentAccount).putUsers(preview.users, false);
-                            MessagesController.getInstance(currentAccount).putChats(preview.chats, false);
-                            if (preview.media instanceof TLRPC.TL_messageMediaWebPage) {
-                                TLRPC.TL_messageMediaWebPage webPage = (TLRPC.TL_messageMediaWebPage) preview.media;
-                                if (webPage.webpage instanceof TLRPC.TL_webPage && webPage.webpage.cached_page != null) {
-                                    NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.openArticle, webPage.webpage, finalUri.toString());
-                                    ok = true;
-                                }
-                            }
-                        }
-                        if (!ok) {
-                            openUrl(context, finalUri, allowCustom, false);
-                        }
+                        // MODIFIED: Completely disable inner browser - always open in external browser
+                        // Even for Telegraph articles with cached pages, open in external browser
+                        openUrl(context, finalUri, allowCustom, false);
                     }));
                     if (inCaseLoading != null) {
                         inCaseLoading.init();
@@ -431,21 +418,9 @@ public class Browser {
     }
 
     public static boolean openInTelegramBrowser(Context context, String url, Browser.Progress progress) {
-        if (LaunchActivity.instance != null) {
-            BottomSheetTabs tabs = LaunchActivity.instance.getBottomSheetTabs();
-            if (tabs != null && tabs.tryReopenTab(url) != null) {
-                return true;
-            }
-        }
-        BaseFragment fragment = LaunchActivity.getSafeLastFragment();
-        if (fragment != null && fragment.getParentLayout() instanceof ActionBarLayout) {
-            fragment = ((ActionBarLayout) fragment.getParentLayout()).getSheetFragment();
-        }
-        if (fragment == null) {
-            return false;
-        }
-        fragment.createArticleViewer(false).open(url, progress);
-        return true;
+        // MODIFIED: Inner browser is completely disabled - always return false
+        // This prevents any shortcuts or buttons from opening the inner browser
+        return false;
     }
 
     public static boolean openInExternalBrowser(Context context, String url, boolean allowIntent) {

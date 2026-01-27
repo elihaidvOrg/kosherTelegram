@@ -3399,20 +3399,14 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
                     if (res.webpage != null && res.webpage.cached_page instanceof TLRPC.TL_page) {
                         addPageToStack(res.webpage, anchor, 1);
                     } else if (!checkInternal.run()) {
-                        if (SharedConfig.inappBrowser) {
-                            addPageToStack(req.url, 1);
-                        } else {
-                            Browser.openUrl(parentActivity, req.url);
-                        }
+                        // MODIFIED: Always use external browser, never inner browser
+                        Browser.openUrl(parentActivity, req.url);
                     }
                 } else if (response instanceof TLRPC.TL_webPage && ((TLRPC.TL_webPage) response).cached_page instanceof TLRPC.TL_page) {
                     addPageToStack((TLRPC.TL_webPage) response, anchor, 1);
                 } else if (!checkInternal.run()) {
-                    if (SharedConfig.inappBrowser) {
-                        addPageToStack(req.url, 1);
-                    } else {
-                        Browser.openUrl(parentActivity, req.url);
-                    }
+                    // MODIFIED: Always use external browser, never inner browser
+                    Browser.openUrl(parentActivity, req.url);
                 }
             }
         }));
@@ -4682,22 +4676,15 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
             }
             Browser.openAsInternalIntent(parentActivity, link);
         } else if (!Browser.openInExternalApp(parentActivity, link, false)) {
-            if (pages[0] == null || pages[0].getWebView() == null) {
-                Browser.openInTelegramBrowser(parentActivity, link, null);
-            } else {
-                pages[0].getWebView().loadUrl(link);
-            }
+            // MODIFIED: Always use external browser, never inner browser
+            Browser.openInExternalBrowser(parentActivity, link, false);
         }
     }
 
     public void openHistoryEntry(BrowserHistory.Entry entry) {
         if (parentActivity == null || entry == null) return;
-        actionBar.showAddress(false, true);
-        if (pages[0] == null || pages[0].getWebView() == null) {
-            Browser.openInTelegramBrowser(parentActivity, entry.url, null);
-        } else {
-            pages[0].getWebView().loadUrl(entry.url, entry.meta);
-        }
+        // MODIFIED: Always use external browser, never inner browser
+        Browser.openInExternalBrowser(parentActivity, entry.url, false);
     }
 
     public void openWebSettings() {
