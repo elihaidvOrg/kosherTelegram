@@ -453,6 +453,7 @@ public abstract class BottomSheetWithRecyclerListView extends BottomSheet {
 
         public PaddingView(Context context) {
             super(context);
+            setTag(RecyclerListView.TAG_NOT_SECTION);
         }
 
         @Override
@@ -609,7 +610,7 @@ public abstract class BottomSheetWithRecyclerListView extends BottomSheet {
                 final RecyclerView.ViewHolder holder = recyclerListView.findViewHolderForAdapterPosition(0);
                 top = -dp(16);
                 if (holder != null) {
-                    top = holder.itemView.getBottom() - AndroidUtilities.dp(16);
+                    top = holder.itemView.getBottom() - dp(16);
                     if (takeTranslationIntoAccount) {
                         top += (int) holder.itemView.getTranslationY();
                     }
@@ -620,6 +621,8 @@ public abstract class BottomSheetWithRecyclerListView extends BottomSheet {
             if (showHandle && handleOffset) {
                 top -= dp(actionBarType == ActionBarType.SLIDING ? 8 : 16);
             }
+            lastTop = top;
+            onSheetTop(top);
 
             float handleAlpha = 1.0f;
             float progressToFullView = 0.0f;
@@ -642,6 +645,7 @@ public abstract class BottomSheetWithRecyclerListView extends BottomSheet {
                 shadowAlpha = t;
                 handleAlpha = AndroidUtilities.lerp(1.0f, 0.5f, t);
                 actionBar.backButtonImageView.setAlpha(t);
+                onActionBarAlpha(t);
                 actionBar.backButtonImageView.setScaleX(t);
                 actionBar.backButtonImageView.setPivotY(actionBar.backButtonImageView.getMeasuredHeight() / 2f);
                 actionBar.backButtonImageView.setScaleY(t);
@@ -688,6 +692,18 @@ public abstract class BottomSheetWithRecyclerListView extends BottomSheet {
 
             onPreDraw(canvas, top, progressToFullView);
         }
+    }
+
+    protected void onActionBarAlpha(float alpha) {}
+
+    @Override
+    protected void onContainerViewTranslation() {
+        onSheetTop(lastTop);
+    }
+
+    private float lastTop;
+    public void onSheetTop(float top) {
+
     }
 
     protected boolean shouldDrawBackground() {
@@ -787,7 +803,7 @@ public abstract class BottomSheetWithRecyclerListView extends BottomSheet {
             for (int i = 0; i < recyclerListView.getChildCount(); i++) {
                 View child = recyclerListView.getChildAt(i);
                 int childPosition = recyclerListView.getChildAdapterPosition(child);
-                if (childPosition > 0 && child.getTop() < top) {
+                if (childPosition >= 0 && child.getTop() < top) {
                     view = child;
                     position = childPosition;
                     top = child.getTop();
@@ -808,11 +824,11 @@ public abstract class BottomSheetWithRecyclerListView extends BottomSheet {
     public void applyScrolledPosition(boolean ignorePaddingView) {
         if (recyclerListView != null && recyclerListView.getLayoutManager() != null && savedScrollPosition >= 0) {
             int offset = savedScrollOffset - containerView.getTop() - recyclerListView.getPaddingTop();
-            RecyclerView.ViewHolder paddingViewHolder = recyclerListView.findViewHolderForAdapterPosition(0);
-            if (ignorePaddingView && paddingViewHolder != null) {
-                View view = paddingViewHolder.itemView;
-                offset -= Math.max(view.getBottom() - recyclerListView.getPaddingTop(), 0);
-            }
+//            RecyclerView.ViewHolder paddingViewHolder = recyclerListView.findViewHolderForAdapterPosition(0);
+//            if (ignorePaddingView && paddingViewHolder != null) {
+//                View view = paddingViewHolder.itemView;
+//                offset -= Math.max(view.getBottom() - recyclerListView.getPaddingTop(), 0);
+//            }
             if (recyclerListView.getLayoutManager() instanceof LinearLayoutManager) {
                 ((LinearLayoutManager) recyclerListView.getLayoutManager()).scrollToPositionWithOffset(savedScrollPosition, offset);
             }
