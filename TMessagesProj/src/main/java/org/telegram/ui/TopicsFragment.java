@@ -4228,7 +4228,8 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
         }
 
         final int additionalList = dp(48);
-        final int additionalSearch = dp(DialogsActivity.SEARCH_FIELD_HEIGHT) + (int) topPanelLayout.getAnimatedHeightWithPadding(dp(14));
+        final int searchFieldDp = parentDialogsActivity != null ? parentDialogsActivity.getDialogsSearchFieldHeightDp() : DialogsActivity.SEARCH_FIELD_HEIGHT;
+        final int additionalSearch = dp(searchFieldDp) + (int) topPanelLayout.getAnimatedHeightWithPadding(dp(14));
 
         final View fragmentView = parentDialogsActivity != null ? parentDialogsActivity.fragmentView : this.fragmentView;
         final View actionBar = parentDialogsActivity != null ? parentDialogsActivity.getActionBar() : this.actionBar;
